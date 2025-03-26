@@ -4,14 +4,14 @@ import bcrypt
 import os
 import json
 
-app = Flask(__name__)
+main = Flask(__name__)
 
 # Kết nối Redis trên Railway
 REDIS_URL = os.getenv("REDIS_URL", "redis://default:glWnCyzNKjSgrxQzLpkriCVKwDBXCgpr@crossover.proxy.rlwy.net:45987")
 redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 
 #API Đăng ký tài khoản
-@app.route("/register", methods=["POST"])
+@main.route("/register", methods=["POST"])
 def register():
     try:
         data = request.json
@@ -40,7 +40,7 @@ def register():
         return jsonify({"error": str(e)}), 500
 
 #Login
-@app.route("/login", methods=["POST"])
+@main.route("/login", methods=["POST"])
 def login():
     try:
         data = request.json
@@ -70,4 +70,4 @@ def login():
     
     
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    main.run(host="0.0.0.0", port=5000)
