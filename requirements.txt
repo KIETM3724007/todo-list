@@ -1,4 +1,4 @@
 flask
 redis
 bcrypt
-gunicorn
+gunicorngit
