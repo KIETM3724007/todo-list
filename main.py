@@ -126,6 +126,13 @@ def get_tasks_by_username():
             task_json = redis_client.get(key)
             if task_json:
                 task_data = json.loads(task_json)
+                # # Xoá description khỏi task
+                # task_data.pop("description", None)
+
+                # Xoá description trong từng công việc con (list_work)
+                if "list_work" in task_data:
+                    for work in task_data["list_work"]:
+                        work.pop("description", None)
                 task_data["task_id"] = key.split(":")[-1]  # gắn task_id để phân biệt
                 tasks.append(task_data)
 
