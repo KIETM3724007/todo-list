@@ -91,6 +91,9 @@ def add_task():
 
         # Tạo ID tăng dần cho mỗi task của user
         task_id = redis_client.incr(f"task:{username}:next_id")
+        
+        # Thêm trường done_at = "" vào task
+        task["done_at"] = ""
 
         # Lưu task vào Redis
         redis_client.set(f"task:{username}:{task_id}", json.dumps(task))
@@ -106,7 +109,7 @@ def get_tasks_by_username():
     try:
         data = request.json
         username = data.get("username")
-
+        
         if not username:
             return jsonify({"error": "Missing username"}), 400
 
@@ -127,16 +130,20 @@ def get_tasks_by_username():
             if task_json:
                 task_data = json.loads(task_json)
                 # # Xoá description khỏi task
-                # task_data.pop("description", None)
+                #task_data.pop("description", None)
 
+                # Xoá img_url nếu tồn tại
+                task_data.pop("img_url", None)
                 # Xoá description trong từng công việc con (list_work)
                 if "list_work" in task_data:
                     for work in task_data["list_work"]:
                         work.pop("description", None)
                 task_data["task_id"] = key.split(":")[-1]  # gắn task_id để phân biệt
+                task_data["create_by"] = username
+                task_data["done_at"] = task_data.get("done_at", "")
                 tasks.append(task_data)
 
-        return jsonify({"username": username, "tasks": tasks}), 200
+        return jsonify({"tasks": tasks}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
