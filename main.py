@@ -94,7 +94,7 @@ def add_task():
         
         # Thêm trường done_at = "" vào task
         task["done_at"] = ""
-
+        task["created_by"] = username
         # Lưu task vào Redis
         redis_client.set(f"task:{username}:{task_id}", json.dumps(task))
 
