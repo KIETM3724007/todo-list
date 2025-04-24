@@ -37,7 +37,7 @@ def register():
         user_data = {"username": username, "name": name, "password": hashed_pw}
         redis_client.set(f"user:{username}", json.dumps(user_data))
 
-        return jsonify({"message": "User registered successfully", "username": username}), 201
+        return jsonify({"message": "User registered successfully", "username": username, "name": user_data["name"]}), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -64,7 +64,7 @@ def login():
 
         # Kiểm tra mật khẩu
         if bcrypt.checkpw(password.encode("utf-8"), user_data["password"].encode("utf-8")):
-            return jsonify({"message": "Login successful", "username": username}), 200
+            return jsonify({"message": "Login successful", "username": username, "name": user_data["name"]}), 200
         else:
             return jsonify({"error": "Invalid password"}), 401  # Sai mật khẩu
 
